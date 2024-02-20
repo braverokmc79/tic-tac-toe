@@ -1,14 +1,38 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const Player = ({name, symbol}) => {
-  return (
-    <li>
-        <span className="player-info">
-        <sapn className="player-name">{name}</sapn>
-        <sapn className="player-name">{symbol}</sapn>
-        </span>
-        <button>수정</button>
-   </li>
+const Player = ({initalName, symbol, isActive}) => {
+
+   const [playName, setPlayName] = useState(initalName);
+   const [isEditing, setIsEditing] = useState(false);
+
+
+   function handleEditClick(){     
+      setIsEditing(editing=>!editing);
+      //setIsEditing(editing=>!editing);
+   }
+
+   function handleChange(event){
+      console.log(event);
+      setPlayName(event.target.value);
+   }
+
+   let editablePlayerName= <span className="player-name">{playName}</span>
+   //let btnCaption ="Edit";
+
+   if(isEditing){
+      editablePlayerName = <input  type="text" required    defaultValue={playName}   onChange={handleChange}  />
+   }
+
+    return (
+        <>
+        <li className={isActive ? 'active' :undefined}>
+            <span className="player-info">
+                    {editablePlayerName}
+                 <span className="player-symbol">{symbol}</span>
+            </span>            
+         <button onClick={handleEditClick}>{isEditing ?  'Save' :'Edit' }</button>
+    </li>
+   </>
   )
 }
 
