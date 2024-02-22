@@ -1,27 +1,67 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GameBoard from "./components/GameBoard"
 import Player from "./components/Player"
 import Log from "./components/Log";
+import {WINNING_COMBINATIONS} from "./winning-combinations.js"
+import GameOver from "./components/GameOver.jsx";
+
+
+
+
+
+
 
 function deriveActivePlayer(gameTurns){
-    let currentPlayer = 'X';
-    if(gameTurns.length>0 && gameTurns[0].player==='X'){
-      currentPlayer = 'O';
-    }
-    return currentPlayer;
+  let currentPlayer = 'X';
+  if(gameTurns.length>0 && gameTurns[0].player==='X'){
+    currentPlayer = 'O';
+  }
+  return currentPlayer;
 }
+
+const initalGameBoard =[
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+]
+
 
 function App() {
     const [gameTurns, setGameTurns] = useState([])  ;
-    //const [activePlayer, setActivePlayer] = useState('X');
-
-    let activePlayer=deriveActivePlayer(gameTurns);
+    const [hasWinner, setHasWinner] = useState(false);
  
-    function handleSelectSquare(rowIndex, colIndex) {
+    let activePlayer=deriveActivePlayer(gameTurns);
+    let gameBoard =[...initalGameBoard.map(arry=>[...arry])];
+
+
+    for(const trun of gameTurns) {
+      const {square, player} =trun;
+      const {row , col} =square;
+      gameBoard[row][col] = player;
+   }
+
+   let winner;
+
+   for(const combination of WINNING_COMBINATIONS) {
+    const firstSquareSymbol = gameBoard[combination[0].row][combination[0].column];  
+    const secondSquareSymbol = gameBoard[combination[1].row][combination[1].column];  
+    const thirdSquareSymbol = gameBoard[combination[2].row][combination[2].column];  
+
+    if(firstSquareSymbol && firstSquareSymbol===secondSquareSymbol && firstSquareSymbol===thirdSquareSymbol){
+     // setHasWinner(hasWinner=>!hasWinner);
+      winner=firstSquareSymbol;
+      
+      //break;
+    }
+  }
+
+
+//무승부
+const hasDraw =gameTurns.length ===9 && !winner;
+function handleSelectSquare(rowIndex, colIndex) {
       //setActivePlayer((curActivePlayer)=>curActivePlayer==='X'? 'O' :'X');
           setGameTurns(prevTurns=>{            
                 const  currentPlayer=deriveActivePlayer(gameTurns);
-
               //   console.log("=====>", rowIndex, colIndex); 
               //   for(const trun of gameTurns) {
               //     const {square, player} =trun;
@@ -29,16 +69,21 @@ function App() {
               //     if(rowIndex===row && colIndex===col){
               //       return prevTurns;
               //     }                  
-              //  }
-                
-
+              //  }                
                 const updatedTurns=[{square : {row:rowIndex, col:colIndex}, player:currentPlayer}
                   , ...prevTurns];
-        
+
                   return updatedTurns;                
             });   
-      console.log(gameTurns)  ;
-    }
+    //  console.log(gameTurns)  ;
+}
+
+
+function handleRestart() {
+  console.log("재시작");
+  setGameTurns([]);
+  gameBoard =[...initalGameBoard];
+}
 
 
     return (
@@ -58,13 +103,14 @@ function App() {
               </ol>
     
 
+              { (winner||hasDraw )&& <GameOver winner={winner}   onRestart={handleRestart}     />}
+
               <GameBoard  onSelectSquare={handleSelectSquare} 
                      activePlayerSymbol={activePlayer} 
-                     turns={gameTurns}     
-                />
-             
+                     turns={gameTurns}   
+                     gameBoard={gameBoard}                  
+                />             
             </div>    
-
 
             <Log  turns={gameTurns} />
         </main>

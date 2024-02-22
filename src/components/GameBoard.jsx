@@ -1,25 +1,11 @@
 
 import { useCallback, useState } from 'react';
-const initalGameBoard =[
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-]
 
-const GameBoard = ({onSelectSquare, activePlayerSymbol, turns}) => {
+
+const GameBoard = ({onSelectSquare, activePlayerSymbol, gameBoard}) => {
 
     // const updatedTurns=[{square : {row:rowIndex, col:colIndex}, player:currentPlayer}
     //     , ...prevTurns];
-
-
-  let gameBoard =initalGameBoard;
-
-  for(const trun of turns) {
-     const {square, player} =trun;
-     const {row , col} =square;
-     gameBoard[row][col] = player;
-  }
-
 
 
 //const [gameBoard, setGameBoard] = useState(initalGameBoard)
