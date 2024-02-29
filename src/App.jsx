@@ -137,6 +137,13 @@ function handlePlayerNameChange(symbol, newName) {
 
             <Log  turns={gameTurns} />
         </main>
+
+
+        <footer  className="text-center" >
+
+           <a href="https://macaronics.net" target="_blank"      style={{ color: "#3f3b00"}}>macaronics.net</a>
+
+        </footer>
       </>
     )
 
